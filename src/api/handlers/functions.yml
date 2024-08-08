@@ -1,0 +1,63 @@
+addCustomer:
+  handler: src/api/handlers/add_customer.handler
+  memorySize: 256
+  timeout: 20
+  maximumRetryAttempts: 0
+  events:
+    - http:
+        path: customers
+        method: post
+        cors: true
+
+deleteCustomerById:
+  handler: src/api/handlers/delete_customer.handler
+  memorySize: 256
+  timeout: 20
+  maximumRetryAttempts: 0
+  events:
+    - http:
+        path: customers/{id}
+        method: delete
+
+findAllCustomers:
+  handler: src/api/handlers/find_all_customer.handler
+  memorySize: 256
+  timeout: 20
+  maximumRetryAttempts: 0
+  events:
+    - http:
+        path: customers
+        method: get
+
+findCustomerByCPF:
+  handler: src/api/handlers/find_customer_by_cpf.handler
+  memorySize: 256
+  timeout: 20
+  maximumRetryAttempts: 0
+  events:
+    - http:
+        path: customers/cpf/{cpf}
+        method: get
+
+findCustomerById:
+  handler: src/api/handlers/add_customer_by_id.handler
+  memorySize: 256
+  timeout: 20
+  maximumRetryAttempts: 0
+  events:
+    - http:
+        path: customers/{id}
+        method: get
+
+updateCustomerById:
+  handler: src/api/handlers/update_customer.handler
+  memorySize: 256
+  timeout: 20
+  maximumRetryAttempts: 0
+  events:
+    - http:
+        path: customers/{id}
+        method: put
+
+
+

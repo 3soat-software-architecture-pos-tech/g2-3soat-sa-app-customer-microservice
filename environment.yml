@@ -1,0 +1,4 @@
+STAGE: ${file(serverless.yml):provider.stage}
+
+#CUSTOMERS_DYNAMODB_TABLE_ARN: ${self:custom.customersTableArn}
+CUSTOMERS_DYNAMODB_TABLE_ARN: !GetAtt CustomersTable.Arn
