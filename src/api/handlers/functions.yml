@@ -1,5 +1,7 @@
+# Customers
+
 addCustomer:
-  handler: src/api/handlers/add_customer.handler
+  handler: src/api/handlers/customer/add_customer.handler
   memorySize: 256
   timeout: 20
   maximumRetryAttempts: 0
@@ -10,7 +12,7 @@ addCustomer:
         cors: true
 
 deleteCustomerById:
-  handler: src/api/handlers/delete_customer.handler
+  handler: src/api/handlers/customer/delete_customer.handler
   memorySize: 256
   timeout: 20
   maximumRetryAttempts: 0
@@ -20,7 +22,7 @@ deleteCustomerById:
         method: delete
 
 findAllCustomers:
-  handler: src/api/handlers/find_all_customer.handler
+  handler: src/api/handlers/customer/find_all_customer.handler
   memorySize: 256
   timeout: 20
   maximumRetryAttempts: 0
@@ -30,7 +32,7 @@ findAllCustomers:
         method: get
 
 findCustomerByCPF:
-  handler: src/api/handlers/find_customer_by_cpf.handler
+  handler: src/api/handlers/customer/find_customer_by_cpf.handler
   memorySize: 256
   timeout: 20
   maximumRetryAttempts: 0
@@ -40,7 +42,7 @@ findCustomerByCPF:
         method: get
 
 findCustomerById:
-  handler: src/api/handlers/add_customer_by_id.handler
+  handler: src/api/handlers/customer/add_customer_by_id.handler
   memorySize: 256
   timeout: 20
   maximumRetryAttempts: 0
@@ -50,7 +52,7 @@ findCustomerById:
         method: get
 
 updateCustomerById:
-  handler: src/api/handlers/update_customer.handler
+  handler: src/api/handlers/customer/update_customer.handler
   memorySize: 256
   timeout: 20
   maximumRetryAttempts: 0
@@ -60,4 +62,26 @@ updateCustomerById:
         method: put
 
 
+# Notifications
 
+addNotification:
+  handler: src/api/handlers/notification/add_notification.handler
+  memorySize: 256
+  timeout: 20
+  maximumRetryAttempts: 0
+  events:
+    - sqs:
+        arn: ${file(serverless.yml):provider.environment.CUSTOMERS_NOTIFICATIONS_ARN}
+        batchSize: 1
+        enabled: true
+
+
+findAllNotificationsByCustomer:
+  handler: src/api/handlers/notification/find_all_notifications_by_customer.handler
+  memorySize: 256
+  timeout: 20
+  maximumRetryAttempts: 0
+  events:
+    - http:
+        path: notifications/customer/{id}
+        method: get

@@ -1,5 +1,6 @@
 Resources:
 
+  # DynamoDB
   CustomersTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -20,7 +21,45 @@ Resources:
           Projection:
             ProjectionType: ALL
       BillingMode: PAY_PER_REQUEST
+  
+  NotificationsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Notifications
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: created_at
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: created_at
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+  
 
+  # SQS
+  customersNotificationsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: customers-notifications-${file(serverless.yml):provider.stage}.fifo
+      VisibilityTimeout: 60
+      FifoQueue: True
+      MessageRetentionPeriod : 3600
+      RedrivePolicy: 
+        deadLetterTargetArn: !GetAtt customersNotificationsDLQ.Arn
+        maxReceiveCount: 1
+  customersNotificationsDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: customers-notificationsDLQ-${file(serverless.yml):provider.stage}.fifo
+      VisibilityTimeout: 60
+      FifoQueue: True
+      MessageRetentionPeriod : 86400
+
+
+  # IAM Roles
   DefaultRole:
     Type: AWS::IAM::Role
     Properties:
@@ -68,3 +107,13 @@ Resources:
                   - dynamodb:DeleteItem
                 Resource:
                   - ${file(serverless.yml):provider.environment.CUSTOMERS_DYNAMODB_TABLE_ARN}
+                  - ${file(serverless.yml):provider.environment.NOTIFICATION_DYNAMODB_TABLE_ARN}
+              - Effect: Allow
+                Action:
+                  - sqs:SendMessage
+                  - sqs:ReceiveMessage
+                  - sqs:DeleteMessage
+                  - sqs:GetQueueAttributes
+                Resource:
+                  - ${file(serverless.yml):provider.environment.CUSTOMERS_NOTIFICATIONS_ARN}
+                  - ${file(serverless.yml):provider.environment.CUSTOMERS_NOTIFICATIONS_DLQ_ARN}

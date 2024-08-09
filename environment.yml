@@ -1,4 +1,9 @@
 STAGE: ${file(serverless.yml):provider.stage}
 
-#CUSTOMERS_DYNAMODB_TABLE_ARN: ${self:custom.customersTableArn}
+# DynamoDB
 CUSTOMERS_DYNAMODB_TABLE_ARN: !GetAtt CustomersTable.Arn
+NOTIFICATION_DYNAMODB_TABLE_ARN: !GetAtt NotificationsTable.Arn
+
+# SQS
+CUSTOMERS_NOTIFICATIONS_ARN: !GetAtt customersNotificationsQueue.Arn
+CUSTOMERS_NOTIFICATIONS_DLQ_ARN: !GetAtt customersNotificationsDLQ.Arn
